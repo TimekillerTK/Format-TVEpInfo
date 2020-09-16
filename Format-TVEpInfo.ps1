@@ -16,17 +16,13 @@ function Format-TVEpInfo {
     param (
         [Parameter(Mandatory=$true,
         ValueFromPipeline=$true)]
-        [string[]]
+        [PSCustomObject[]]
         $InputObject
     )
     PROCESS {
-        
-        foreach ($object in $InputObject) {
             
-            #This makes it a string, hence it's visible
-            Write-output "$object"
-            return $object
-
-        }
+        # fixed the issue with PSCustomObject type, this was a TYPE issue
+        Write-output $InputObject
+        
     }
 }
