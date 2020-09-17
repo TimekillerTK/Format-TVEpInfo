@@ -46,14 +46,6 @@ function Format-TVEpInfo {
         # fixed the issue with PSCustomObject type, this was a TYPE issue
         #Write-output $InputObject
 
-        # Switch for adding a leading zero to episode number
-        switch ($InputObject.Count) {
-            {$_ -lt 10} {  }
-            {($_ -gt 9) -and ($_ -lt 100)} {  }
-            {($_ -gt 99) -and ($_ -lt 1000)} {  }
-            Default {Write-Error "ERROR, EPISODE COUNT IS TOO DAMN HIGH!"}
-        }
-
         foreach ($object in $InputObject) {
 
             # Setting variables, kind of optional, but will avoid changing the object in the pipeline permanently
@@ -84,6 +76,22 @@ function Format-TVEpInfo {
 
             $output = "$($showtitle) - Episode $($episode) - $($eptitle)"
 
+            # Switch for adding a leading zero to episode number
+            # 
+            switch ($InputObject.Count) {
+                {$_ -lt 10} { 
+                    # don't add zeroes
+                }
+                {($_ -gt 9) -and ($_ -lt 100)} { 
+                    # Foreach object between 1-9 add a leading zero
+                }
+                {($_ -gt 99) -and ($_ -lt 1000)} { 
+                    # Foreach object between 1-9 add two leading zeroes
+                    # Foreach object between 10-99 add a leading zero
+                }
+                Default {Write-Error "ERROR, EPISODE COUNT IS TOO DAMN HIGH!"}
+            }
+
             # This block deals with the Extension parameter
             if ($PSBoundParameters.ContainsKey('Extension')) {
                 
@@ -99,3 +107,5 @@ function Format-TVEpInfo {
 
     } #PROCESS
 } #function
+
+
