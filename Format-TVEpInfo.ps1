@@ -77,6 +77,43 @@ function Format-TVEpInfo {
                 # Temporary operation, will be replaced by roman numerals in the future
                 $eptitle = $eptitle -replace '[0-9]','R'
 
+                $number = 26
+
+                #$result = [System.Math]::Floor($number / 10)
+                #$result
+#
+                #$remainder = $number % 10
+                #$remainder
+<#
+Examples of roman numerals:
+       I
+       II
+       III
+5 - 1       = IV
+5 - 0       = V
+5 + 1       = VI
+5 + 2       = VII
+5 + 3       = VIII
+10 - 1      = IX
+10 - 0      = X
+10 + 1      = XI
+10 + 2      = XII
+10 + 3      = XIII
+10 - 1 + 5  = XIV
+10 + 5      = XV
+10 + 5 + 1  = XVI
+10 + 5 + 2  = XVII
+10 + 5 + 3  = XVIII
+10 - 1 + 10 = XIX
+10 + 10     = XX
+
+-> Check if something is divisible by 10
+    -> Write X for each 10 in the number, check the remainder
+        -> Check if remainder is divisible by 5
+          -> If yes, write one V
+            -> Write a I for each of the remaining numbers
+-> if yes
+#>
             } #if
 
 
