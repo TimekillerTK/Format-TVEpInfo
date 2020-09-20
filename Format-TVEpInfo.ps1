@@ -5,9 +5,6 @@ function Format-TVEpInfo {
 
     .DESCRIPTION
     Long description
-
-    .PARAMETER REMOVEILLEGALCHAR
-    Removes NTFS illegal characters / ? < > \ : * | "
     
     .EXAMPLE
     An example
@@ -27,22 +24,16 @@ function Format-TVEpInfo {
         [string]
         $Extension,
 
-        # Will remove numbers from the Season and 
+        # Will remove numbers from the Season and replace them with roman numerals
         [switch]
         $RomanNumerals,
 
+        # Will remove NTFS illegal characters / ? < > \ : * | " from the Episode Title 
         [switch]
         $RemoveIllegalChar
     )
     PROCESS {
             
-        $RomanNumeralsList = @{
-            "I"  = 1
-            "IV" = 4
-            "V"  = 5
-            "IX" = 9
-            "X"  = 10
-        }
         # fixed the issue with PSCustomObject type, this was a TYPE issue
         #Write-output $InputObject
 
@@ -74,46 +65,91 @@ function Format-TVEpInfo {
             # This block deals with the RomanNumerals parameter
             if ($PSBoundParameters.ContainsKey('RomanNumerals')) {
 
-                # Temporary operation, will be replaced by roman numerals in the future
-                $eptitle = $eptitle -replace '[0-9]','R'
+                # Actual function below
+                function ConvertTo-RomanNumeral {
 
-                $number = 26
+                    # Input needs to be tuned/fixed
+                    $number = 1
+                
+                    $outputX = $null
+                    $outputIX = $null
+                    $outputV = $null
+                    $outputIV = $null
+                    $outputI = $null
+                
+                    # Roman "X"
+                    if (($number / 10) -ge 1) {
+                
+                        $numeral = "X"
+                        $result = [System.Math]::Floor($number / 10)
+                
+                        $outputX = $numeral * $result
+                        
+                        # Sets the remainder for the next if statement
+                        $number = $number % 10
+                
+                    } #if
+                
+                    # Roman "IX"
+                    if (($number / 9) -ge 1) {
+                    
+                
+                        $numeral = "IX"
+                        $result = [System.Math]::Floor($number / 9)
+                
+                        $outputIX = $numeral * $result
+                
+                        # Sets the remainder for the next if statement
+                        $number = $number % 9
+                    } #if
+                
+                    # Roman "V"
+                    if (($number / 5) -ge 1) {
+                    
+                
+                        $numeral = "V"
+                        $result = [System.Math]::Floor($number / 5)
+                
+                        $outputV = $numeral * $result
+                
+                        # Sets the remainder for the next if statement
+                        $number = $number % 5
+                
+                    } #if
+                
+                    # Roman "IV"
+                    if (($number / 4) -eq 1) {
+                    
+                        $numeral = "IV"
+                        $result = [System.Math]::Floor($number / 4)
+                
+                        $outputIV = $numeral * $result
+                        
+                        # Sets the remainder for the next if statement
+                        $number = $number % 4
+                        
+                    } #if
+                
+                    # Roman "I"
+                    if (($number / 1) -ge 1) {
+                    
+                
+                        $numeral = "I"
+                        $result = [System.Math]::Floor($number / 1)
+                
+                        $outputI = $numeral * $result
+                
+                
+                    } #if
+                
+                    $finaloutput = $outputX + $outputIX + $outputV + $outputIV + $outputI
+                    $finaloutput
+                
+                } #function
 
-                #$result = [System.Math]::Floor($number / 10)
-                #$result
-#
-                #$remainder = $number % 10
-                #$remainder
-<#
-Examples of roman numerals:
-       I
-       II
-       III
-5 - 1       = IV
-5 - 0       = V
-5 + 1       = VI
-5 + 2       = VII
-5 + 3       = VIII
-10 - 1      = IX
-10 - 0      = X
-10 + 1      = XI
-10 + 2      = XII
-10 + 3      = XIII
-10 - 1 + 5  = XIV
-10 + 5      = XV
-10 + 5 + 1  = XVI
-10 + 5 + 2  = XVII
-10 + 5 + 3  = XVIII
-10 - 1 + 10 = XIX
-10 + 10     = XX
-
--> Check if something is divisible by 10
-    -> Write X for each 10 in the number, check the remainder
-        -> Check if remainder is divisible by 5
-          -> If yes, write one V
-            -> Write a I for each of the remaining numbers
--> if yes
-#>
+                # This is what will swap the number itself
+                $eptitle = $eptitle -replace "[0-9]", #-replace: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-7
+                
             } #if
 
 
